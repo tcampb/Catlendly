@@ -31,17 +31,18 @@ class PyMain(object):
         self.background = self.background.convert()
         self.background.fill((0, 0, 0))
         self.game_screen = pygame.Surface((1439, 844))
-        self.game_screen = self.game_screen.convert()
         self.game_screen_rect = self.game_screen.get_rect()
+        self.game_screen = self.game_screen.convert()
         self.stage_background = load_image("../assets/catlendly_background.png")
-        self.lives = 9
         self.health_bar_surface = load_image("../assets/health_bar_100.png")
         self.health_bar_surface_rect = self.health_bar_surface.get_rect()
         self.health_bar_surface_rect.top = 844
         self.health_bar_surface_rect.left = 215
+        self.lives = 9
+
+        print self.screen.get_size()
 
     def MainLoop(self):
-
         y = 0
         self.time_hit = 0
         self.load_intro_sprites()
@@ -58,27 +59,18 @@ class PyMain(object):
             elif self.level == "Character_selection":
                 pygame.display.update()
             elif self.level == "Stage_one":
-                self.screen.blit(self.stage_background, (0, (rel_y - self.stage_background.get_rect().height)))
+
+                self.screen.blit(self.stage_background, (20, (rel_y - self.stage_background.get_rect().height)))
                 self.load_asteroids()
                 if pygame.sprite.spritecollide(self.ship, self.asteroid_sprites, False):
                     self.ship.image = load_image("../assets/ship_explosion.png")
                     if self.ship.is_alive:
                         self.lives -= 1
                         self.time_hit = time.time()
-                        self.health_bar_surface = load_image({
-                            "0": "../assets/health_bar_0.png",
-                            "1": "../assets/health_bar_11.png",
-                            "2": "../assets/health_bar_22.png",
-                            "3": "../assets/health_bar_33.png",
-                            "4": "../assets/health_bar_45.png",
-                            "5": "../assets/health_bar_56.png",
-                            "6": "../assets/health_bar_67.png",
-                            "7": "../assets/health_bar_78.png",
-                            "8": "../assets/health_bar_89.png"
-                }[str(self.lives)])
                     self.ship.is_alive = False
                 if int(self.time_hit + 3) == int(time.time()):
                     self.ship_sprites.empty()
+                    self.level = "Stage_one"
                     self.Stage_one(True)
                 self.asteroid_sprites.draw(self.screen)
                 self.update_asteroids()
@@ -87,9 +79,8 @@ class PyMain(object):
                 pygame.display.update()
                 y += 1
                 if rel_y < 899:
-                    self.screen.blit(self.stage_background, (0, rel_y))
+                    self.screen.blit(self.stage_background, (20, rel_y))
             
-       
             # Event Handler
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN and pygame.key.name(event.key) == "escape":
@@ -132,7 +123,7 @@ class PyMain(object):
                                                           Static_Image('../assets/button_inactive.png', (1010, 700, 250, 68)))
                         image_group.draw(self.screen)
 
-                
+    
     def Character_Selection(self):
         #Clear previous surface
         self.screen.fill((0,0,0))
@@ -177,19 +168,6 @@ class PyMain(object):
             self.ship_sprites = self.LoadSprites(self.character)
             self.ship_sprites.draw(self.screen)
             self.asteroid_sprites.empty()
-            # self.health_bar_surface = load_image({
-            #     "0": "../assets/health_bar_0.png",
-            #     "1": "../assets/health_bar_11.png",
-            #     "2": "../assets/health_bar_22.png",
-            #     "3": "../assets/health_bar_33.png",
-            #     "4": "../assets/health_bar_45.png",
-            #     "5": "../assets/health_bar_56.png",
-            #     "6": "../assets/health_bar_67.png",
-            #     "7": "../assets/health_bar_78.png",
-            #     "8": "../assets/health_bar_89.png"
-            #     }[str(self.lives)])
-
-
         else:
             self.screen.fill((0,0,0))
             self.star_sprites.clear(self.screen, self.background)
@@ -272,7 +250,7 @@ class Ship(pygame.sprite.Sprite):
         self.image = load_image(character)
         #pygame.Rect - object for storting rectangular coordinates 
         self.rect = self.image.get_rect()
-        self.rect.top = 770
+        self.rect.top = 800
         self.rect.left = 685
         self.x_dist  = 45
         self.y_dist  = 45
@@ -291,6 +269,7 @@ class Ship(pygame.sprite.Sprite):
             yMove = self.y_dist
         elif (key == pygame.K_UP):
             yMove = -self.y_dist
+
 
         self.rect.move_ip(xMove, yMove)
         self.rect.clamp_ip(screen_rect)

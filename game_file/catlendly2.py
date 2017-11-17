@@ -1,61 +1,7 @@
-import os, sys, random, time, string, pickle
+import os, sys, random, time
 import pygame
 from pygame.locals import *
 pygame.font.init()
-
-
-# player_scores = {
-
-# }
-
-
-
-
-# try:
-#     player_scores_file = open("player_scores.txt", "r+b")
-#     player_scores = pickle.load(player_scores_file)
-#     player_scores_file.close()
-# except:
-#     print "Failed to open file."
-
-
-# print player_scores
-
-# score_array = []
-# player_names = []
-# score_tuple = player_scores.items()
-
-
-# for tuple_pair in player_scores.items():
-#     score_array.append(tuple_pair[1])
-
-# score_array_sorted = sorted(score_array)
-
-
-# for tuple_pair in player_scores.items():
-#     if tuple_pair[1] in score_array_sorted:
-#         player_names.append(tuple_pair[0])
-    
-
-
-
-
-
-# top_three_scores = []
-# scores_sorted = sorted(score_array)
-# scores_sorted.reverse()
-
-
-
-
-# for i in range(0, 3):
-#         top_three_scores.append(score_tuple[0])
-
-# top_three_scores.reverse()
-
-# print scores_sorted[2]
-
-# print player_scores[scores_sorted[2]]
 
 
 def load_image(file_name):
@@ -70,47 +16,14 @@ def load_fonts(text, size, color):
 
 
 class PyMain(object):
-    player_scores = {}
 
-    try:
-        player_scores_file = open("player_scores.txt", "r+b")
-        player_scores = pickle.load(player_scores_file)
-        player_scores_file.close()
-    except:
-        print "Failed to open file!!!!."
-
-    score_array = []
-    player_names = []
-    score_tuple = player_scores.items()
-
-    
-    for tuple_pair in player_scores.items():
-        score_array.append(tuple_pair[1])
-
-    score_array_sorted = sorted(score_array)
-    reversed_score = score_array_sorted[::-1]
-    top_three_scores = reversed_score[0:3]
-
-    print reversed_score
-
-
-    for i in range(0,3):
-        for tuple_pair in player_scores.items():
-            if top_three_scores[i] in tuple_pair:
-                player_names.append(tuple_pair[0])
-
-
-   
-
-    print player_scores
-    print player_names
     def __init__(self, width=1439, height=899):
         pygame.init()
         #set window size
         self.width  = width
         self.height = height
         #This function will create a display surface; it will initialize a window or screen for display
-        self.screen = pygame.display.set_mode((self.width, self.height), pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode((self.width, self.height), pygame.RESIZABLE)
         self.screen_rect = self.screen.get_rect()
         self.caption = pygame.display.set_caption("Catlendly")
         self.level = "Intro"
@@ -121,7 +34,7 @@ class PyMain(object):
         self.game_screen = self.game_screen.convert()
         self.game_screen_rect = self.game_screen.get_rect()
         self.stage_background = load_image("../assets/catlendly_background.png")
-        self.lives = 3
+        self.lives = 1
         self.health_bar_surface = load_image("../assets/health_bar_100.png")
         self.health_bar_surface_rect = self.health_bar_surface.get_rect()
         self.health_bar_surface_rect.top = 844
@@ -133,20 +46,16 @@ class PyMain(object):
         initial_f = "-"
         initial_m = "-"
         initial_l = "-"
-        full_initials = initial_f + initial_m + initial_l
+        
 
         y = 0
         self.time_hit = 0
         self.load_intro_sprites()
         pygame.display.update()
         #Main game loop
-        while self.level != "restart":
+        while 1:
             rel_y = y % self.stage_background.get_rect().height
             if self.level == "Intro":
-                self.screen.blit(self.font_top_scores, [550, 500])
-                self.screen.blit(self.font_score_one, [575, 600])
-                self.screen.blit(self.font_score_two, [575, 650])
-                self.screen.blit(self.font_score_three, [575, 700])
                 self.star_sprites.draw(self.screen)
                 pygame.display.update()
                 self.star_sprites.clear(self.screen, self.background)
@@ -164,8 +73,8 @@ class PyMain(object):
                         self.time_hit = time.time()
                         self.health_bar_surface = load_image({
                             "0": "../assets/health_bar_0.png",
-                            "1": "../assets/health_bar_33.png",
-                            "2": "../assets/health_bar_67.png",
+                            "1": "../assets/health_bar_11.png",
+                            "2": "../assets/health_bar_22.png",
                             "3": "../assets/health_bar_33.png",
                             "4": "../assets/health_bar_45.png",
                             "5": "../assets/health_bar_56.png",
@@ -190,14 +99,14 @@ class PyMain(object):
                 if rel_y < 899:
                     self.screen.blit(self.stage_background, (0, rel_y))
             elif self.level == "Game_Over":
-                self.game_over()
-                self.health_bar_surface.fill((0,0,0))
-                self.screen.blit(self.reset_initials, [550, 550])
+                self.game_over(initial_f, initial_m, initial_l)
+                self.screen.blit(self.reset_initials, [600, 600])
                 self.font_player_initials = load_fonts("%s%s%s" % (initial_f, initial_m, initial_l), 90, (255, 255, 255))
-                self.screen.blit(self.font_player_initials, [550, 550])
+                self.screen.blit(self.font_player_initials, [600, 600])
                 self.screen.blit(self.font_gameover, [290, 145])
-                self.screen.blit(self.font_final_score, [450, 300])
-                self.screen.blit(self.font_enter_initials, [350, 400])
+                self.screen.blit(self.font_final_score, [415, 375])
+                self.screen.blit(self.font_restart, [500, 400])
+                print "%s%s%s" % (initial_f, initial_m, initial_l)
                 pygame.display.update()
 
             
@@ -246,7 +155,6 @@ class PyMain(object):
                 elif self.level == "Game_Over":
                     if event.type == pygame.KEYDOWN:
                         key = pygame.key.name(event.key)
-                    
                         if key == "backspace" or key == "delete":
                             
                             if initial_l != "-":
@@ -256,7 +164,7 @@ class PyMain(object):
                             elif initial_f != "-":
                                 initial_f = "-"
 
-                        if key in string.ascii_letters:
+                        if event.key != pygame.K_BACKSPACE and event.key != pygame.K_DELETE:
                             if initial_f == "-":
                                 initial_f = pygame.key.name(event.key).upper()
                             elif initial_m == "-":
@@ -264,78 +172,26 @@ class PyMain(object):
                             elif initial_l == "-":
                                 initial_l = pygame.key.name(event.key).upper()
 
-                        elif key == "return":
-                            full_initials = "%s%s%s" % (initial_f, initial_m, initial_l)
-                            PyMain.player_scores[full_initials] = self.score
-                           
-                            saved_file = open("player_scores.txt", "wb")
-                            #saved_file.write(player_scores)
-                            print PyMain.player_scores[full_initials], self.score
-                            pickle.dump(PyMain.player_scores, saved_file)
-                            
-                            saved_file.close()
-                            
-                            # except: 
-                            #     print "Failed to save player scores"
-
-                            self.level = "restart"
-                        
-        
-        
-
-        try:
-            
-            player_scores_file = open("player_scores.txt", "rb")
-            PyMain.player_scores = pickle.load(player_scores_file)
-            player_scores_file.close()
-        except:
-            print "Failed to open file."
-
-        PyMain.score_array = []
-        PyMain.player_names = []
-        PyMain.score_tuple = PyMain.player_scores.items()
-
-    
-        for PyMain.tuple_pair in PyMain.player_scores.items():
-            PyMain.score_array.append(PyMain.tuple_pair[1])
-
-        PyMain.score_array_sorted = sorted(PyMain.score_array)
-
-        reversed_score = PyMain.score_array_sorted[::-1]
-
-        top_three_scores = reversed_score[0:3]
-
-    
-
-        for i in range(0,3):
-            for PyMain.tuple_pair in PyMain.player_scores.items():
-                if top_three_scores[i] in PyMain.tuple_pair:
-                    PyMain.player_names.append(PyMain.tuple_pair[0])
-
-
-
-        
-
                         
                     
                      
-        MainWindow = PyMain()
-        MainWindow.MainLoop()
+                       
 
 
 
-    def game_over(self):
-        self.asteroid_sprites.clear(self.screen, self.background)
+    def game_over(self, first_initial, middle_initial, last_initial):
         self.asteroid_sprites.empty()
         self.font_gameover = load_fonts("Game Over", 95, (42, 247, 44))
         self.font_final_score = load_fonts("Score: %d" % self.score, 50, (255, 255, 255))
-        self.font_enter_initials = load_fonts("Enter initials:", 50, (255, 255, 255))
-        #(270, 91)
+        self.font_restart = load_fonts("Enter initials:", 50, (255, 255, 255))
+        #self.player_initials = "%s%s%s" % (first_initial, middle_initial, last_initial)
+        #self.font_player_initials = load_fonts("%s%s%s" % (first_initial, middle_initial, last_initial), 90, (255, 255, 255))
         self.reset_initials = pygame.Surface((300,200))
         self.reset_initials.fill((0,0,0))
-        self.health_bar_surface.fill((0,0,0))
-        
 
+
+
+                
     def Character_Selection(self):
         #Clear previous surface
         self.screen.fill((0,0,0))
@@ -380,24 +236,24 @@ class PyMain(object):
             if self.lives == 0:
                 self.level = "Game_Over"
             else:
-                self.screen.blit(self.font_score, [1180, 870])
+                #self.screen.blit(self.font_score, [1224, 844])
                 self.ship_sprites = self.LoadSprites(self.character)
                 self.ship_sprites.draw(self.screen)
                 self.asteroid_sprites.empty()
-                self.stage_time = time.time()
            
 
         else:
             self.screen.fill((0,0,0))
             self.star_sprites.clear(self.screen, self.background)
             self.star_sprites.empty()
-            self.stage_time = time.time()
             self.screen.blit(self.health_bar_surface, [844, 215])
+            self.font_score = load_fonts("Score: %d" % self.score, 20, (255, 255, 255)) 
+            #self.screen.blit(self.font_score, [1224, 844])
             self.ship_sprites = self.LoadSprites(self.character)
             self.ship_sprites.draw(self.screen)
+
             self.asteroid_sprites = pygame.sprite.Group()
-            
-            pygame.display.update()
+            #pygame.display.update()
 
                 
        
@@ -411,21 +267,13 @@ class PyMain(object):
         return self.ship_sprites
 
     def load_intro_sprites(self):
-        #font_top_scores
+
         font_Catlendly_header = load_fonts("Catlendly", 95, (42, 247, 44))
-        font_press_to_start = load_fonts("Press Enter to Start", 30, (191, 0, 255))
+        font_press_to_start = load_fonts("Press Enter to Start", 30, (255, 255, 255))
         rfont_Catlendly_header = self.screen.blit(font_Catlendly_header, [290, 145])
         rfont_press_to_start = self.screen.blit(font_press_to_start, [415, 375])
         rfont_press_to_start.width = 250
         rfont_press_to_start.width = 60
-        self.font_top_scores = load_fonts("TOP SCORES ", 30, (255, 255, 255))
-        self.font_score_one = load_fonts("%s: %d" % (PyMain.player_names[0], PyMain.player_scores[PyMain.player_names[0]]), 30, (255, 255, 255))
-        self.font_score_two = load_fonts("%s: %d" % (PyMain.player_names[1], PyMain.player_scores[PyMain.player_names[1]]), 30, (255, 255, 255))
-        self.font_score_three = load_fonts("%s: %d" % (PyMain.player_names[2], PyMain.player_scores[PyMain.player_names[2]]), 30, (255, 255, 255))
-        # rfont_top_scores = self.screen.blit(font_top_scores, [475, 375])
-        # rfont_score_one = self.screen.blit(font_top_scores, [500, 400])
-        # rfont_score_two = self.screen.blit(font_top_scores, [515, 475])
-        # rfont_score_three = self.screen.blit(font_top_scores, [530, 500])
 
         nNumHorizontal = int(self.width/50)
         nNumVertical = int(self.height/50)
@@ -455,17 +303,9 @@ class PyMain(object):
 
     def load_asteroids(self):
         asteroid_image_array = ["../assets/asteroid1.png", "../assets/asteroid2.png", "../assets/asteroid3.png", "../assets/asteroid4.png"]
-        
-        if int(self.stage_time + 15) < int(time.time()):
-
-            if random.random() < 0.2:
-                self.asteroid_sprites.add(Asteroid(random.choice(asteroid_image_array),
-                                                   random.randint(20, self.width)))
-
-        else:
-            if random.random() < 0.1:
-                self.asteroid_sprites.add(Asteroid(random.choice(asteroid_image_array),
-                                                   random.randint(20, self.width)))
+        if random.randint(0, 10) == 0:
+            self.asteroid_sprites.add(Asteroid(random.choice(asteroid_image_array),
+                                               random.randint(20, self.width)))
         
           
       
@@ -495,8 +335,8 @@ class Ship(pygame.sprite.Sprite):
     def move(self, key, screen_rect):
         xMove = 0
         yMove = 0
-
-
+        
+    
         if (key == pygame.K_RIGHT):
             xMove = self.x_dist
         elif (key == pygame.K_LEFT):

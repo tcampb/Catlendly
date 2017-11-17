@@ -23,7 +23,7 @@ class PyMain(object):
         self.width  = width
         self.height = height
         #This function will create a display surface; it will initialize a window or screen for display
-        self.screen = pygame.display.set_mode((self.width, self.height), pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode((self.width, self.height), pygame.RESIZABLE)
         self.screen_rect = self.screen.get_rect()
         self.caption = pygame.display.set_caption("Catlendly")
         self.level = "Intro"
@@ -34,13 +34,19 @@ class PyMain(object):
         self.game_screen = self.game_screen.convert()
         self.game_screen_rect = self.game_screen.get_rect()
         self.stage_background = load_image("../assets/catlendly_background.png")
-        self.lives = 9
+        self.lives = 1
         self.health_bar_surface = load_image("../assets/health_bar_100.png")
         self.health_bar_surface_rect = self.health_bar_surface.get_rect()
         self.health_bar_surface_rect.top = 844
         self.health_bar_surface_rect.left = 215
+        self.score = 0
 
     def MainLoop(self):
+
+        initial_f = "-"
+        initial_m = "-"
+        initial_l = "-"
+        
 
         y = 0
         self.time_hit = 0
@@ -77,17 +83,32 @@ class PyMain(object):
                             "8": "../assets/health_bar_89.png"
                 }[str(self.lives)])
                     self.ship.is_alive = False
-                if int(self.time_hit + 3) == int(time.time()):
+                if int(self.time_hit + 1.5) == int(time.time()):
                     self.ship_sprites.empty()
                     self.Stage_one(True)
                 self.asteroid_sprites.draw(self.screen)
                 self.update_asteroids()
                 self.screen.blit(self.health_bar_surface, [215, 855])
+                self.font_score = load_fonts("Score: %d" % self.score, 20, (255, 255, 255))
+                self.screen.blit(self.font_score, [1180, 870])
                 self.ship_sprites.draw(self.screen)
                 pygame.display.update()
+                if self.ship.is_alive:
+                    self.score += 1 
                 y += 1
                 if rel_y < 899:
                     self.screen.blit(self.stage_background, (0, rel_y))
+            elif self.level == "Game_Over":
+                self.game_over(initial_f, initial_m, initial_l)
+                self.screen.blit(self.reset_initials, [600, 600])
+                self.font_player_initials = load_fonts("%s%s%s" % (initial_f, initial_m, initial_l), 90, (255, 255, 255))
+                self.screen.blit(self.font_player_initials, [600, 600])
+                self.screen.blit(self.font_gameover, [290, 145])
+                self.screen.blit(self.font_final_score, [415, 375])
+                self.screen.blit(self.font_restart, [500, 400])
+                print "%s%s%s" % (initial_f, initial_m, initial_l)
+                pygame.display.update()
+
             
        
             # Event Handler
@@ -131,6 +152,44 @@ class PyMain(object):
                                                           Static_Image('../assets/button_inactive.png', (580, 700, 250, 68)),
                                                           Static_Image('../assets/button_inactive.png', (1010, 700, 250, 68)))
                         image_group.draw(self.screen)
+                elif self.level == "Game_Over":
+                    if event.type == pygame.KEYDOWN:
+                        key = pygame.key.name(event.key)
+                        if key == "backspace" or key == "delete":
+                            
+                            if initial_l != "-":
+                                initial_l = "-"
+                            elif initial_m != "-":
+                                initial_m = "-"
+                            elif initial_f != "-":
+                                initial_f = "-"
+
+                        if event.key != pygame.K_BACKSPACE and event.key != pygame.K_DELETE:
+                            if initial_f == "-":
+                                initial_f = pygame.key.name(event.key).upper()
+                            elif initial_m == "-":
+                                initial_m = pygame.key.name(event.key).upper()
+                            elif initial_l == "-":
+                                initial_l = pygame.key.name(event.key).upper()
+
+                        
+                    
+                     
+                       
+
+
+
+    def game_over(self, first_initial, middle_initial, last_initial):
+        self.asteroid_sprites.empty()
+        self.font_gameover = load_fonts("Game Over", 95, (42, 247, 44))
+        self.font_final_score = load_fonts("Score: %d" % self.score, 50, (255, 255, 255))
+        self.font_restart = load_fonts("Enter initials:", 50, (255, 255, 255))
+        #self.player_initials = "%s%s%s" % (first_initial, middle_initial, last_initial)
+        #self.font_player_initials = load_fonts("%s%s%s" % (first_initial, middle_initial, last_initial), 90, (255, 255, 255))
+        self.reset_initials = pygame.Surface((300,200))
+        self.reset_initials.fill((0,0,0))
+
+
 
                 
     def Character_Selection(self):
@@ -174,27 +233,22 @@ class PyMain(object):
     def Stage_one(self, reset): 
 
         if reset:
-            self.ship_sprites = self.LoadSprites(self.character)
-            self.ship_sprites.draw(self.screen)
-            self.asteroid_sprites.empty()
-            # self.health_bar_surface = load_image({
-            #     "0": "../assets/health_bar_0.png",
-            #     "1": "../assets/health_bar_11.png",
-            #     "2": "../assets/health_bar_22.png",
-            #     "3": "../assets/health_bar_33.png",
-            #     "4": "../assets/health_bar_45.png",
-            #     "5": "../assets/health_bar_56.png",
-            #     "6": "../assets/health_bar_67.png",
-            #     "7": "../assets/health_bar_78.png",
-            #     "8": "../assets/health_bar_89.png"
-            #     }[str(self.lives)])
-
+            if self.lives == 0:
+                self.level = "Game_Over"
+            else:
+                #self.screen.blit(self.font_score, [1224, 844])
+                self.ship_sprites = self.LoadSprites(self.character)
+                self.ship_sprites.draw(self.screen)
+                self.asteroid_sprites.empty()
+           
 
         else:
             self.screen.fill((0,0,0))
             self.star_sprites.clear(self.screen, self.background)
             self.star_sprites.empty()
             self.screen.blit(self.health_bar_surface, [844, 215])
+            self.font_score = load_fonts("Score: %d" % self.score, 20, (255, 255, 255)) 
+            #self.screen.blit(self.font_score, [1224, 844])
             self.ship_sprites = self.LoadSprites(self.character)
             self.ship_sprites.draw(self.screen)
 

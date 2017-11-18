@@ -4,60 +4,6 @@ from pygame.locals import *
 pygame.font.init()
 
 
-# player_scores = {
-
-# }
-
-
-
-
-# try:
-#     player_scores_file = open("player_scores.txt", "r+b")
-#     player_scores = pickle.load(player_scores_file)
-#     player_scores_file.close()
-# except:
-#     print "Failed to open file."
-
-
-# print player_scores
-
-# score_array = []
-# player_names = []
-# score_tuple = player_scores.items()
-
-
-# for tuple_pair in player_scores.items():
-#     score_array.append(tuple_pair[1])
-
-# score_array_sorted = sorted(score_array)
-
-
-# for tuple_pair in player_scores.items():
-#     if tuple_pair[1] in score_array_sorted:
-#         player_names.append(tuple_pair[0])
-    
-
-
-
-
-
-# top_three_scores = []
-# scores_sorted = sorted(score_array)
-# scores_sorted.reverse()
-
-
-
-
-# for i in range(0, 3):
-#         top_three_scores.append(score_tuple[0])
-
-# top_three_scores.reverse()
-
-# print scores_sorted[2]
-
-# print player_scores[scores_sorted[2]]
-
-
 def load_image(file_name):
     image = pygame.image.load(file_name)
     image = image.convert()
@@ -70,40 +16,85 @@ def load_fonts(text, size, color):
 
 
 class PyMain(object):
-    player_scores = {}
+    score_array = [0,0,0]
+    player_names = ["AAA","BBB","CCC"]
+    player_scores = {"AAA":0, "BBB":0, "CCC":0}
+
+    total = {
+         3: (570, 590),
+         4: (570, 650),
+         5: (570, 700)
+    }
+
+    players_total = total[len(player_names)]
+
+
+
+    print players_total
+
 
     try:
         player_scores_file = open("player_scores.txt", "r+b")
         player_scores = pickle.load(player_scores_file)
         player_scores_file.close()
-    except:
-        print "Failed to open file!!!!."
+        score_tuple = player_scores.items()
+        for tuple_pair in player_scores.items():
+            score_array.append(tuple_pair[1])
 
-    score_array = []
-    player_names = []
-    score_tuple = player_scores.items()
+        score_array_sorted = sorted(score_array)
+        reversed_score = score_array_sorted[::-1]
+        top_three_scores = reversed_score[0:3]
+            # score_dict_array = player_scores.items()
+            # print score_dict_array
+            # for tuple_pair in score_dict_array:
+            #     score_array.append(tuple_pair[1])
+            # score_array_sorted = sorted(score_array)
+            # score_array_reversed = score_array_sorted[::-1]
+            # top_three_scores = score_array_reversed[0:3]
+
+            # for i in range(0,3):
+            #     for tuple_pair in score_dict_array:
+            #         if top_three_scores[i] in tuple_pair:
+            #             player_names.append(tuple_pair[0])
+        
+            
+    except:
+        print "Failed to open file"
+
+   
+    
+    # if player_score_size < 4:
+    #     colon1, colon2, colon3 = "","",""
+    # if player_score_size < 5:
+    #     colon2, colon3 = "", ""
+    # elif len(player_scores) < 6:
+    #     colon3 = "", ""
+
+
+    # score_array = []
+    # player_names = []
+    # score_tuple = player_scores.items()
 
     
-    for tuple_pair in player_scores.items():
-        score_array.append(tuple_pair[1])
+    # for tuple_pair in player_scores.items():
+    #     score_array.append(tuple_pair[1])
 
-    score_array_sorted = sorted(score_array)
-    reversed_score = score_array_sorted[::-1]
-    top_three_scores = reversed_score[0:3]
+    # score_array_sorted = sorted(score_array)
+    # reversed_score = score_array_sorted[::-1]
+    # top_three_scores = reversed_score[0:3]
 
-    print reversed_score
+   
 
 
-    for i in range(0,3):
-        for tuple_pair in player_scores.items():
-            if top_three_scores[i] in tuple_pair:
-                player_names.append(tuple_pair[0])
+    # for i in range(0,3):
+    #     for tuple_pair in player_scores.items():
+    #         if top_three_scores[i] in tuple_pair:
+    #             player_names.append(tuple_pair[0])
 
 
    
 
-    print player_scores
-    print player_names
+
     def __init__(self, width=1439, height=899):
         pygame.init()
         #set window size
@@ -147,6 +138,7 @@ class PyMain(object):
                 self.screen.blit(self.font_score_one, [575, 600])
                 self.screen.blit(self.font_score_two, [575, 650])
                 self.screen.blit(self.font_score_three, [575, 700])
+                self.screen.blit(self.score_cover, PyMain.players_total)
                 self.star_sprites.draw(self.screen)
                 pygame.display.update()
                 self.star_sprites.clear(self.screen, self.background)
@@ -267,10 +259,7 @@ class PyMain(object):
                         elif key == "return":
                             full_initials = "%s%s%s" % (initial_f, initial_m, initial_l)
                             PyMain.player_scores[full_initials] = self.score
-                           
                             saved_file = open("player_scores.txt", "wb")
-                            #saved_file.write(player_scores)
-                            print PyMain.player_scores[full_initials], self.score
                             pickle.dump(PyMain.player_scores, saved_file)
                             
                             saved_file.close()
@@ -283,42 +272,54 @@ class PyMain(object):
         
         
 
-        try:
+        # try:
             
-            player_scores_file = open("player_scores.txt", "rb")
-            PyMain.player_scores = pickle.load(player_scores_file)
+        #     player_scores_file = open("player_scores.txt", "rb")
+        #     PyMain.player_scores = pickle.load(player_scores_file)
+        #     player_scores_file.close()
+        # except:
+        #     print "Failed to open file."
+
+        # PyMain.score_array = []
+        # PyMain.player_names = []
+        # PyMain.score_tuple = PyMain.player_scores.items()
+
+    
+        # for PyMain.tuple_pair in PyMain.player_scores.items():
+        #     PyMain.score_array.append(PyMain.tuple_pair[1])
+
+        # PyMain.score_array_sorted = sorted(PyMain.score_array)
+
+        # reversed_score = PyMain.score_array_sorted[::-1]
+
+        # top_three_scores = reversed_score[0:3]
+
+    
+
+        # for i in range(0,3):
+        #     for PyMain.tuple_pair in PyMain.player_scores.items():
+        #         if top_three_scores[i] in PyMain.tuple_pair:
+        #             PyMain.player_names.append(PyMain.tuple_pair[0])
+
+        PyMain.players_total = PyMain.total[len(PyMain.player_names)]
+
+        try:
+            player_scores_file = open("player_scores.txt", "r+b")
+            player_scores = pickle.load(player_scores_file)
             player_scores_file.close()
+            PyMain.score_tuple = player_scores.items()
+            for PyMain.tuple_pair in player_scores.items():
+                    PyMain.score_array.append(PyMain.tuple_pair[1])
+            PyMain.score_array_sorted = sorted(PyMain.score_array)
+            reversed_score = PyMain.score_array_sorted[::-1]
+            top_three_scores = reversed_score[0:3]
+
         except:
             print "Failed to open file."
 
-        PyMain.score_array = []
-        PyMain.player_names = []
-        PyMain.score_tuple = PyMain.player_scores.items()
+      
 
-    
-        for PyMain.tuple_pair in PyMain.player_scores.items():
-            PyMain.score_array.append(PyMain.tuple_pair[1])
-
-        PyMain.score_array_sorted = sorted(PyMain.score_array)
-
-        reversed_score = PyMain.score_array_sorted[::-1]
-
-        top_three_scores = reversed_score[0:3]
-
-    
-
-        for i in range(0,3):
-            for PyMain.tuple_pair in PyMain.player_scores.items():
-                if top_three_scores[i] in PyMain.tuple_pair:
-                    PyMain.player_names.append(PyMain.tuple_pair[0])
-
-
-
-        
-
-                        
-                    
-                     
+                
         MainWindow = PyMain()
         MainWindow.MainLoop()
 
@@ -411,7 +412,7 @@ class PyMain(object):
         return self.ship_sprites
 
     def load_intro_sprites(self):
-        #font_top_scores
+        self.score_cover = pygame.Surface((200, 200))
         font_Catlendly_header = load_fonts("Catlendly", 95, (42, 247, 44))
         font_press_to_start = load_fonts("Press Enter to Start", 30, (191, 0, 255))
         rfont_Catlendly_header = self.screen.blit(font_Catlendly_header, [290, 145])
@@ -419,9 +420,9 @@ class PyMain(object):
         rfont_press_to_start.width = 250
         rfont_press_to_start.width = 60
         self.font_top_scores = load_fonts("TOP SCORES ", 30, (255, 255, 255))
-        self.font_score_one = load_fonts("%s: %d" % (PyMain.player_names[0], PyMain.player_scores[PyMain.player_names[0]]), 30, (255, 255, 255))
-        self.font_score_two = load_fonts("%s: %d" % (PyMain.player_names[1], PyMain.player_scores[PyMain.player_names[1]]), 30, (255, 255, 255))
-        self.font_score_three = load_fonts("%s: %d" % (PyMain.player_names[2], PyMain.player_scores[PyMain.player_names[2]]), 30, (255, 255, 255))
+        self.font_score_one = load_fonts("%s: %s" % (PyMain.player_names[0], PyMain.player_scores[PyMain.player_names[0]]), 30, (255, 255, 255))
+        self.font_score_two = load_fonts("%s: %s" % (PyMain.player_names[1], PyMain.player_scores[PyMain.player_names[1]]), 30, (255, 255, 255))
+        self.font_score_three = load_fonts("%s: %s" % (PyMain.player_names[2], PyMain.player_scores[PyMain.player_names[2]]), 30, (255, 255, 255))    
         # rfont_top_scores = self.screen.blit(font_top_scores, [475, 375])
         # rfont_score_one = self.screen.blit(font_top_scores, [500, 400])
         # rfont_score_two = self.screen.blit(font_top_scores, [515, 475])
@@ -456,12 +457,15 @@ class PyMain(object):
     def load_asteroids(self):
         asteroid_image_array = ["../assets/asteroid1.png", "../assets/asteroid2.png", "../assets/asteroid3.png", "../assets/asteroid4.png"]
         
-        if int(self.stage_time + 15) < int(time.time()):
-
-            if random.random() < 0.2:
+        if int(self.stage_time + 30) < int(time.time()):
+            if random.random() < 0.3:
                 self.asteroid_sprites.add(Asteroid(random.choice(asteroid_image_array),
                                                    random.randint(20, self.width)))
 
+        elif int(self.stage_time + 15) < int(time.time()):
+            if random.random() < 0.2:
+                self.asteroid_sprites.add(Asteroid(random.choice(asteroid_image_array),
+                                                   random.randint(20, self.width)))
         else:
             if random.random() < 0.1:
                 self.asteroid_sprites.add(Asteroid(random.choice(asteroid_image_array),
@@ -552,8 +556,6 @@ if __name__ == "__main__":
     #MainWindow.MainLoop()
     MainWindow.MainLoop()
    
-
-
 
 
 

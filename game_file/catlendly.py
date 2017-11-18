@@ -17,33 +17,30 @@ def load_fonts(text, size, color):
 
 class PyMain(object):
     score_array = [0,0,0]
-    player_names = ["AAA","BBB","CCC"]
-    player_scores = {"AAA":0, "BBB":0, "CCC":0}
+    player_names = ["$$$","###","***"]
+    player_scores = {"$$$":0, "###":0, "***":0}
 
     total = {
-         3: (570, 590),
-         4: (570, 650),
-         5: (570, 700)
+         3: (570, 630),
+         4: (570, 745),
+         5: (570, 795)
     }
 
     players_total = total[len(player_names)]
 
 
 
-    print players_total
+    # try:
+    #     player_scores_file = open("player_scores.txt", "r+b")
+    #     player_scores = pickle.load(player_scores_file)
+    #     player_scores_file.close()
+    #     score_tuple = player_scores.items()
+    #     for tuple_pair in player_scores.items():
+    #         score_array.append(tuple_pair[1])
 
-
-    try:
-        player_scores_file = open("player_scores.txt", "r+b")
-        player_scores = pickle.load(player_scores_file)
-        player_scores_file.close()
-        score_tuple = player_scores.items()
-        for tuple_pair in player_scores.items():
-            score_array.append(tuple_pair[1])
-
-        score_array_sorted = sorted(score_array)
-        reversed_score = score_array_sorted[::-1]
-        top_three_scores = reversed_score[0:3]
+    #     score_array_sorted = sorted(score_array)
+    #     reversed_score = score_array_sorted[::-1]
+    #     top_three_scores = reversed_score[0:3]
             # score_dict_array = player_scores.items()
             # print score_dict_array
             # for tuple_pair in score_dict_array:
@@ -57,10 +54,7 @@ class PyMain(object):
             #         if top_three_scores[i] in tuple_pair:
             #             player_names.append(tuple_pair[0])
         
-            
-    except:
-        print "Failed to open file"
-
+       
    
     
     # if player_score_size < 4:
@@ -300,22 +294,23 @@ class PyMain(object):
         #     for PyMain.tuple_pair in PyMain.player_scores.items():
         #         if top_three_scores[i] in PyMain.tuple_pair:
         #             PyMain.player_names.append(PyMain.tuple_pair[0])
+        # PyMain.players_total = PyMain.total[len(PyMain.player_names)]
+        # try:
+        #     player_scores_file = open("player_scores.txt", "r+b")
+        #     player_scores = pickle.load(player_scores_file)
+        #     print player_scores.read()
+        #     player_scores_file.close()
+        #     PyMain.score_tuple = player_scores.items()
+        #     print PyMain.score_tuple
+        #     for PyMain.tuple_pair in player_scores.items():
+        #             PyMain.score_array.append(PyMain.tuple_pair[1])
+        #     PyMain.score_array_sorted = sorted(PyMain.score_array)
+        #     reversed_score = PyMain.score_array_sorted[::-1]
+        #     top_three_scores = reversed_score[0:3]
+        #     print top_three_scores
 
-        PyMain.players_total = PyMain.total[len(PyMain.player_names)]
-
-        try:
-            player_scores_file = open("player_scores.txt", "r+b")
-            player_scores = pickle.load(player_scores_file)
-            player_scores_file.close()
-            PyMain.score_tuple = player_scores.items()
-            for PyMain.tuple_pair in player_scores.items():
-                    PyMain.score_array.append(PyMain.tuple_pair[1])
-            PyMain.score_array_sorted = sorted(PyMain.score_array)
-            reversed_score = PyMain.score_array_sorted[::-1]
-            top_three_scores = reversed_score[0:3]
-
-        except:
-            print "Failed to open file."
+        # except:
+        #     print "Failed to open file."
 
       
 
@@ -412,7 +407,38 @@ class PyMain(object):
         return self.ship_sprites
 
     def load_intro_sprites(self):
-        self.score_cover = pygame.Surface((200, 200))
+        
+        try:
+            PyMain.score_array = []
+            player_scores_file = open("player_scores.txt", "r+b")
+            PyMain.player_scores = pickle.load(player_scores_file)
+            player_scores_file.close()
+            score_tuple = PyMain.player_scores.items()
+            PyMain.score_array = []
+            for tuple_pair in score_tuple:
+                print tuple_pair
+                PyMain.score_array.append(tuple_pair[1])
+
+            PyMain.score_array_sorted = sorted(PyMain.score_array)
+            reversed_score = PyMain.score_array_sorted[::-1]
+            top_three_scores = reversed_score[0:3]
+            print top_three_scores
+            
+
+            PyMain.player_names = []
+            for i in range(0,3):
+                for tuple_pair in score_tuple:
+                    if top_three_scores[i] in tuple_pair:
+                        PyMain.player_names.append(tuple_pair[0])
+        
+        except:
+            print "Unable to open file."
+
+
+
+        self.score_cover = pygame.Surface((300, 200))
+        #self.score_cover.fill((255,0,0))
+        #self.score_cover.fill((0,0,0))
         font_Catlendly_header = load_fonts("Catlendly", 95, (42, 247, 44))
         font_press_to_start = load_fonts("Press Enter to Start", 30, (191, 0, 255))
         rfont_Catlendly_header = self.screen.blit(font_Catlendly_header, [290, 145])

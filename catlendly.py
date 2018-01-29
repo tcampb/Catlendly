@@ -10,7 +10,7 @@ def load_image(file_name):
     return image
 
 def load_fonts(text, size, color):
-    font = pygame.font.Font("../assets/PressStart2P-Regular.ttf", size)
+    font = pygame.font.Font("assets/PressStart2P-Regular.ttf", size)
     space_font = font.render(text, 1, color)
     return space_font
 
@@ -45,8 +45,8 @@ class PyMain(object):
         self.game_screen = pygame.Surface((1439, 844)).convert()
         self.game_screen_rect = self.game_screen.get_rect()
         #Load background images
-        self.stage_background = load_image("../assets/catlendly_background.png")
-        self.health_bar_surface = load_image("../assets/health_bar_100.png")
+        self.stage_background = load_image("assets/catlendly_background.png")
+        self.health_bar_surface = load_image("assets/health_bar_100.png")
         #Set game attributes
         self.score = 0
         self.lives = 3
@@ -82,21 +82,21 @@ class PyMain(object):
                 self.screen.blit(self.stage_background, (0, (rel_y - self.stage_background.get_rect().height)))
                 self.load_asteroids()
                 if pygame.sprite.spritecollide(self.ship, self.asteroid_sprites, False):
-                    self.ship.image = load_image("../assets/ship_explosion.png")
+                    self.ship.image = load_image("assets/ship_explosion.png")
                     if self.ship.is_alive:
                         self.lives -= 1
                         self.time_hit = time.time()
                         #Update health bar image according to the number of PyMain.lives remaining
                         self.health_bar_surface = load_image({
-                            "0": "../assets/health_bar_0.png",
-                            "1": "../assets/health_bar_33.png",
-                            "2": "../assets/health_bar_67.png",
-                            "3": "../assets/health_bar_33.png",
-                            "4": "../assets/health_bar_45.png",
-                            "5": "../assets/health_bar_56.png",
-                            "6": "../assets/health_bar_67.png",
-                            "7": "../assets/health_bar_78.png",
-                            "8": "../assets/health_bar_89.png"
+                            "0": "assets/health_bar_0.png",
+                            "1": "assets/health_bar_33.png",
+                            "2": "assets/health_bar_67.png",
+                            "3": "assets/health_bar_33.png",
+                            "4": "assets/health_bar_45.png",
+                            "5": "assets/health_bar_56.png",
+                            "6": "assets/health_bar_67.png",
+                            "7": "assets/health_bar_78.png",
+                            "8": "assets/health_bar_89.png"
                 }[str(self.lives)])
                     self.ship.is_alive = False
                 #Create new Ship object and reset stage_one after collision
@@ -146,32 +146,32 @@ class PyMain(object):
                     mouse = pygame.mouse.get_pos()
                     if mouse[0] in range(150, 380) and mouse[1] in range(700, 768):
                         #Create button hover effect
-                        image_group = pygame.sprite.Group(Static_Image('../assets/button_success.png', (150, 700, 250, 68)))
+                        image_group = pygame.sprite.Group(Static_Image('assets/button_success.png', (150, 700, 250, 68)))
                         image_group.draw(self.screen)
                         if event.type == pygame.MOUSEBUTTONDOWN:
                             #Set ship.image according to mouse position
                             self.level = "stage_one"
-                            self.character = "../assets/Ship1.png"
+                            self.character = "assets/Ship1.png"
                             self.stage_one(False)
                     elif mouse[0] in range(580, 810) and mouse[1] in range(700, 768):
-                        image_group = pygame.sprite.Group(Static_Image('../assets/button_success.png', (580, 700, 250, 68)))
+                        image_group = pygame.sprite.Group(Static_Image('assets/button_success.png', (580, 700, 250, 68)))
                         image_group.draw(self.screen)
                         if event.type == pygame.MOUSEBUTTONDOWN:
                             self.level = "stage_one"
-                            self.character = "../assets/Ship2.png"
+                            self.character = "assets/Ship2.png"
                             self.stage_one(False)
                     elif mouse[0] in range(1010, 1260) and mouse[1] in range(700, 768):
-                        image_group = pygame.sprite.Group(Static_Image('../assets/button_success.png', (1010, 700, 250, 68)))
+                        image_group = pygame.sprite.Group(Static_Image('assets/button_success.png', (1010, 700, 250, 68)))
                         image_group.draw(self.screen)
                         if event.type == pygame.MOUSEBUTTONDOWN:
                             self.level = "stage_one"
-                            self.character = "../assets/Ship3.png"
+                            self.character = "assets/Ship3.png"
                             self.stage_one(False)
                     else:
                         #Reset button image to inactive state when mouse not in rectangular coordinates
-                        image_group = pygame.sprite.Group(Static_Image('../assets/button_inactive.png', (150, 700, 250, 68)),
-                                                          Static_Image('../assets/button_inactive.png', (580, 700, 250, 68)),
-                                                          Static_Image('../assets/button_inactive.png', (1010, 700, 250, 68)))
+                        image_group = pygame.sprite.Group(Static_Image('assets/button_inactive.png', (150, 700, 250, 68)),
+                                                          Static_Image('assets/button_inactive.png', (580, 700, 250, 68)),
+                                                          Static_Image('assets/button_inactive.png', (1010, 700, 250, 68)))
                         image_group.draw(self.screen)
                 elif self.level == "game_over":
                     full_initials = "%s%s%s" % (first_initial, middle_initial, last_initial)
@@ -242,15 +242,15 @@ class PyMain(object):
         self.screen.blit(text_ship, [525, 580])
         self.screen.blit(text_ship, [955, 580])
         #Create Static_Image objects
-        static_image_group = pygame.sprite.Group(Static_Image('../assets/Cat1.png', (105, 175, 144, 119)),
-                                                 Static_Image('../assets/Cat2.png', (535, 175, 144, 119)),
-                                                 Static_Image('../assets/Cat3.png', (965, 175, 144, 119)),
-                                                 Static_Image('../assets/button_inactive.png', (150, 700, 250, 68)),
-                                                 Static_Image('../assets/button_inactive.png', (580, 700, 250, 68)),
-                                                 Static_Image('../assets/button_inactive.png', (1010, 700, 250, 68)),
-                                                 Static_Image('../assets/Ship1.png', (285, 580, 75, 73)),
-                                                 Static_Image('../assets/Ship2.png', (710, 580, 75, 73)),
-                                                 Static_Image('../assets/Ship3.png', (1135, 580, 75, 73))
+        static_image_group = pygame.sprite.Group(Static_Image('assets/Cat1.png', (105, 175, 144, 119)),
+                                                 Static_Image('assets/Cat2.png', (535, 175, 144, 119)),
+                                                 Static_Image('assets/Cat3.png', (965, 175, 144, 119)),
+                                                 Static_Image('assets/button_inactive.png', (150, 700, 250, 68)),
+                                                 Static_Image('assets/button_inactive.png', (580, 700, 250, 68)),
+                                                 Static_Image('assets/button_inactive.png', (1010, 700, 250, 68)),
+                                                 Static_Image('assets/Ship1.png', (285, 580, 75, 73)),
+                                                 Static_Image('assets/Ship2.png', (710, 580, 75, 73)),
+                                                 Static_Image('assets/Ship3.png', (1135, 580, 75, 73))
                                                  )
         #Draw static_image_group to screen
         static_image_group.draw(self.screen)
@@ -356,7 +356,7 @@ class PyMain(object):
                 self.star_sprites.add(Stars(pygame.Rect(x, y, 50, 50), random.choice(colors)))
 
     def load_asteroids(self):
-        asteroid_image_array = ["../assets/asteroid1.png", "../assets/asteroid2.png", "../assets/asteroid3.png", "../assets/asteroid4.png"]
+        asteroid_image_array = ["assets/asteroid1.png", "assets/asteroid2.png", "assets/asteroid3.png", "assets/asteroid4.png"]
         if int(self.stage_time + 30) < int(time.time()):
             if random.random() < 0.3:
                 self.asteroid_sprites.add(Asteroid(random.choice(asteroid_image_array),
